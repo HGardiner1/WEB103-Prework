@@ -1,26 +1,51 @@
-import { useState } from 'react'
-import { useRoutes } from 'react-router-dom'
-import ShowCreators from "./Pages/ShowCreators"
-import ViewCreator from "./Pages/ViewCreator"
-import AddCreator from "./Pages/AddCreator"
-import EditCreator from "./Pages/EditCreator"
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import supabase from "./client";
 
-import './App.css'
+import ShowCreators from "./pages/ShowCreators";
+import AddCreator from "./Pages/AddCreator";
+import EditCreator from "./pages/EditCreator";
+import ViewCreator from "./pages/ViewCreator";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [creators, setCreators] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchCreators() {
+    setLoading(true);
+    const { data, error } = await supabase.from("creators").select("*");
+
+    if (error) {
+      console.error("Error fetching creators:", error);
+      setCreators([]);
+    } else {
+      setCreators(data);
+    }
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchCreators();
+  }, []);
 
   return (
-    <div>
+    <Router>
       <Routes>
-        <Route path="/" element={<ShowCreators />} />
-        <Route path="/view" element={<ViewCreator />} />
-        <Route path="/view" element={<AddCreator />} />
-        <Route path="/view" element={<EditCreator />} />
+        <Route
+          path="/"
+          element={<ShowCreators creators={creators} loading={loading} />}
+        />
+        <Route
+          path="/add"
+          element={<AddCreator onAdd={fetchCreators} />}
+        />
+        <Route
+          path="/edit/:url"
+          element={<EditCreator onEdit={fetchCreators} />}
+        />
+        <Route path="/view/:url" element={<ViewCreator />} />
       </Routes>
-    </div>
-        
-  )
+    </Router>
+  );
 }
-
-export default App
