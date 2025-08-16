@@ -1,11 +1,12 @@
+// App.jsx
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // no Router here
 import supabase from "./client";
 
-import ShowCreators from "./pages/ShowCreators";
+import ShowCreators from "./Pages/ShowCreators";
 import AddCreator from "./Pages/AddCreator";
-import EditCreator from "./pages/EditCreator";
-import ViewCreator from "./pages/ViewCreator";
+import EditCreator from "./Pages/EditCreator";
+import ViewCreator from "./Pages/ViewCreator";
 
 export default function App() {
   const [creators, setCreators] = useState([]);
@@ -30,22 +31,14 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={<ShowCreators creators={creators} loading={loading} />}
-        />
-        <Route
-          path="/add"
-          element={<AddCreator onAdd={fetchCreators} />}
-        />
-        <Route
-          path="/edit/:url"
-          element={<EditCreator onEdit={fetchCreators} />}
-        />
-        <Route path="/view/:url" element={<ViewCreator />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route
+        path="/"
+        element={<ShowCreators creators={creators} loading={loading} />}
+      />
+      <Route path="/add" element={<AddCreator onAdd={fetchCreators} />} />
+      <Route path="/edit/:url" element={<EditCreator onEdit={fetchCreators} />} />
+      <Route path="/view/:url" element={<ViewCreator />} />
+    </Routes>
   );
 }

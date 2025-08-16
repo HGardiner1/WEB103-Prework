@@ -4,7 +4,6 @@ import supabase from "../client";
 
 export default function AddCreator({ onAdd }) {
   const navigate = useNavigate();
-
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [description, setDescription] = useState("");
@@ -25,12 +24,11 @@ export default function AddCreator({ onAdd }) {
       return;
     }
 
-    const { data, error } = await supabase.from("creators").insert([
-      { name, url, description }
-    ]);
+    const { error } = await supabase
+      .from("creators")
+      .insert([{ name, url, description }]);
 
     if (error) {
-      console.error("Error adding creator:", error);
       setError("Failed to add creator.");
     } else {
       if (onAdd) onAdd();
